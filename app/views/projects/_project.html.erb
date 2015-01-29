@@ -15,6 +15,16 @@
         <%= h truncate(strip_tags(project.description), :length => 110) %>
       </div>
     <% end %>
+    <% unless project.parent.blank? %>
+      <%= link_to h(project.parent.title), project.parent %>
+    <% end %>
+    <% unless project.children.blank? %>
+      <ul>
+      <% project.children.each do |son| %>
+        <li><%= link_to h(son.title), son  %></li>
+      <% end %>
+      <ul>
+    <% end %>
     <% if project_user -%>
       <div>
         <%= link_to is_me?(project_user.user) ? t(:view_your_observations) : t(:view_users_observations, :user => project_user.user.login),

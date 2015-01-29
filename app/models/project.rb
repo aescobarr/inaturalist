@@ -1,6 +1,8 @@
 class Project < ActiveRecord::Base
   belongs_to :user
   belongs_to :place, :inverse_of => :projects
+  belongs_to :parent, :class_name => 'Project'
+  has_many :children, :class_name => 'Project', :foreign_key=> 'parent_id', :dependent => :nullify
   has_many :project_users, :dependent => :delete_all
   has_many :project_observations, :dependent => :destroy
   has_many :project_invitations, :dependent => :destroy
