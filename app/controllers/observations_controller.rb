@@ -1352,7 +1352,11 @@ class ObservationsController < ApplicationController
     
     unless request.format == :mobile
       search_params, find_options = get_search_params(params)
-      search_params[:projects] = @project.id
+      unless @project.parent?
+        search_params[:projects] = @project.id
+      else
+        search_params[:projects] = @project.children.collect(&:id)
+      end
       if search_params[:q].blank?
         get_paginated_observations(search_params, find_options)
       else

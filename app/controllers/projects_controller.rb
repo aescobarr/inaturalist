@@ -82,7 +82,9 @@ class ProjectsController < ApplicationController
     end
     @order = params[:order] if ORDERS.include?(params[:order])
     @order ||= 'title'
-    @projects = Project.not_flagged_as_spam.
+    #@projects = Project.not_flagged_as_spam.
+    #  page(params[:page]).order(ORDER_CLAUSES[@order])
+    @projects = Project.not_flagged_as_spam.where(:parent_id => nil).
       page(params[:page]).order(ORDER_CLAUSES[@order])
     @projects = @projects.in_place(@place) if @place
     respond_to do |format|
@@ -109,20 +111,40 @@ class ProjectsController < ApplicationController
         else
           top_observers_scope.order("taxa_count desc, observations_count desc").where("taxa_count > 0")
         end
-        @project_users = @project.project_users.paginate(:page => 1, :per_page => 5, :include => :user, :order => "id DESC")
-        @members_count = @project_users.total_entries
-        @project_observations = @project.project_observations.page(1).
-          includes([
-            { :observation => [ :iconic_taxon,
-                                :projects,
-                                :quality_metrics,
-                                :stored_preferences,
-                                :taxon,
-                                { :observation_photos => :photo },
-                                { :user => :stored_preferences } ] },
-            { :curator_identification => [:user, :taxon] }
-          ]).
-          order("project_observations.id DESC")
+        #@project_users = @project.project_users.paginate(:page => 1, :per_page => 5, :include => :user, :order => "id DESC")
+        #@members_count = @project_users.total_entries
+        unless @project.parent?
+          @project_users = @project.project_users.paginate(:page => 1, :per_page => 5, :include => :user, :order => "id DESC")
+          @members_count = @project_users.total_entries
+          @project_observations = @project.project_observations.page(1).
+            includes([
+              { :observation => [ :iconic_taxon,
+                                  :projects,
+                                  :quality_metrics,
+                                  :stored_preferences,
+                                  :taxon,
+                                  { :observation_photos => :photo },
+                                  { :user => :stored_preferences } ] },
+              { :curator_identification => [:user, :taxon] }
+            ]).
+            order("project_observations.id DESC")
+        else
+          @project_users = @project.users_lineage.paginate(:page => 1, :per_page => 5, :include => :user, :order => "id DESC")
+          @members_count = @project_users.total_entries
+          @project_observations = @project.project_observations_lineage.page(1).
+            includes([
+              { :observation => [ :iconic_taxon,
+                                  :projects,
+                                  :quality_metrics,
+                                  :stored_preferences,
+                                  :taxon,
+                                  { :observation_photos => :photo },
+                                  { :user => :stored_preferences } ] },
+              { :curator_identification => [:user, :taxon] }
+            ]).
+            order("project_observations.id DESC")
+
+        end
         @project_observations_count = @project_observations.count
         @observations = @project_observations.map(&:observation) unless @project.project_type == 'bioblitz'
         @project_journal_posts = @project.posts.published.order("published_at DESC").limit(4)
@@ -523,18 +545,60 @@ class ProjectsController < ApplicationController
       end
     end
   end
+
+  def parent_project_user_stats
+    c = ProjectUser.where(:project_id => @project.children.pluck(:id))
+    c.count(:group => "EXTRACT(YEAR FROM created_at) || '-' || EXTRACT(MONTH FROM created_at)")
+  end
+
+  def parent_project_observation_stats
+    c = ProjectObservation.where(:project_id => @project.children.pluck(:id))
+    c.count(:group => "EXTRACT(YEAR FROM created_at) || '-' || EXTRACT(MONTH FROM created_at)")
+  end
   
-  def stats
-    @project_user_stats = @project.project_users.count(:group => "EXTRACT(YEAR FROM created_at) || '-' || EXTRACT(MONTH FROM created_at)")
-    @project_observation_stats = @project.project_observations.count(:group => "EXTRACT(YEAR FROM created_at) || '-' || EXTRACT(MONTH FROM created_at)")
-    @unique_observer_stats = @project.project_observations.count(
-      :select => "observations.user_id", 
-      :include => :observation, 
+  def parent_unique_observer_stats
+    c = ProjectObservation.where(:project_id => @project.children.pluck(:id))
+    c.count(
+      :select => "observations.user_id",
+      :include => :observation,
       :group => "EXTRACT(YEAR FROM project_observations.created_at) || '-' || EXTRACT(MONTH FROM project_observations.created_at)")
+  end
+
+  def parent_total_project_users
+    ProjectUser.select(:user_id).where(:project_id => @project.children.pluck(:id)).distinct.count
+  end
+
+  def parent_total_project_observations
+    c = ProjectObservation.where(:project_id => @project.children.pluck(:id))
+    c.count
+  end
+
+  def parent_total_unique_observers
+    c = ProjectObservation.where(:project_id => @project.children.pluck(:id))
+    c.count( :select => "observations.user_id",:include => :observation )
+  end
+ 
+  def stats
+    unless @project.parent?
+      @project_user_stats = @project.project_users.count(:group => "EXTRACT(YEAR FROM created_at) || '-' || EXTRACT(MONTH FROM created_at)")
+      @project_observation_stats = @project.project_observations.count(:group => "EXTRACT(YEAR FROM created_at) || '-' || EXTRACT(MONTH FROM created_at)")
+      @unique_observer_stats = @project.project_observations.count(
+        :select => "observations.user_id", 
+        :include => :observation, 
+        :group => "EXTRACT(YEAR FROM project_observations.created_at) || '-' || EXTRACT(MONTH FROM project_observations.created_at)")
     
-    @total_project_users = @project.project_users.count
-    @total_project_observations = @project.project_observations.count
-    @total_unique_observers = @project.project_observations.count(:select => "observations.user_id", :include => :observation)
+      @total_project_users = @project.project_users.count
+      @total_project_observations = @project.project_observations.count
+      @total_unique_observers = @project.project_observations.count(:select => "observations.user_id", :include => :observation)
+    else
+      @project_user_stats = parent_project_user_stats
+      @project_observation_stats = parent_project_observation_stats
+      @unique_observer_stats = parent_unique_observer_stats
+
+      @total_project_users = parent_total_project_users
+      @total_project_observations = parent_total_project_observations
+      @total_unique_observers = parent_total_unique_observers
+    end
     
     @headers = ['year/month', 'new users', 'new observations', 'unique observers']
     @data = []

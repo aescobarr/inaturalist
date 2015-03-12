@@ -191,27 +191,29 @@
             :wrapper => {:id => "project_menu", :class => "toggle_menu_list"} do %>
           <ul>
             <% for project in @projects %>
-              <li class="inline buttonrow">
-                <%= link_to t(:remove),
-                  remove_project_observation_path(project, :observation_id => @observation.id),
-                  :remote => true,
-                  :method => :delete,
-                  "data-type" => "json",
-                  :confirm => t(:are_you_sure_delete_observation_from_project, :project => project.title),
-                  :class => "removelink pale button",
-                  :id => dom_id(project, "removelink"),
-                  :style => @project_observations_by_project_id[project.id] ? nil : 'display:none' %>
-                <%= link_to t(:add), 
-                  add_project_observation_path(project, :observation_id => @observation.id),
-                  :remote => true,
-                  "data-type" => "json",
-                  "data-project-id" => project.id,
-                  :method => :post,
-                  :id => dom_id(project, "addlink"),
-                  :class => "addlink glaucous button",
-                  :style => @project_observations_by_project_id[project.id] ? 'display:none' : nil %>
-                <%= link_to h(project.title), project, :class => "inter" %>
-              </li>
+              <% unless project.parent? %>
+                <li class="inline buttonrow">
+                  <%= link_to t(:remove),
+                    remove_project_observation_path(project, :observation_id => @observation.id),
+                    :remote => true,
+                    :method => :delete,
+                    "data-type" => "json",
+                    :confirm => t(:are_you_sure_delete_observation_from_project, :project => project.title),
+                    :class => "removelink pale button",
+                    :id => dom_id(project, "removelink"),
+                    :style => @project_observations_by_project_id[project.id] ? nil : 'display:none' %>
+                  <%= link_to t(:add), 
+                    add_project_observation_path(project, :observation_id => @observation.id),
+                    :remote => true,
+                    "data-type" => "json",
+                    "data-project-id" => project.id,
+                    :method => :post,
+                    :id => dom_id(project, "addlink"),
+                    :class => "addlink glaucous button",
+                    :style => @project_observations_by_project_id[project.id] ? 'display:none' : nil %>
+                  <%= link_to h(project.title), project, :class => "inter" %>
+                </li>
+              <% end %>
             <% end %>
           </ul>
         <% end %>

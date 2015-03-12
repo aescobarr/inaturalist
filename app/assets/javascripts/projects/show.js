@@ -46,4 +46,8 @@ $(document).ready(function() {
   $('#bioblitzstats').observationTaxonStats({
     url: '/observations/taxon_stats.json?' + OBSERVATIONS_URL.split('?')[1]
   })
+  $('#lineage').hide();
+  $('#toggle_lineage').click(function(){
+    $( "#lineage" ).toggle( "fold" );
+  })
 })

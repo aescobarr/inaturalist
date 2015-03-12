@@ -62,3 +62,19 @@
       :class => "readmore" %>
   <% end -%>
 </div>
+
+<% if @project.parent? %>
+  <div class="column span-12">
+    <h3>Estadistiques subprojectes</h3>
+  </div>
+  <div class="column span-12">
+    <table>
+    <% @project.children.each do |c| %>
+      <tr>
+        <td><%= link_to c.title, project_stats_path(c, 'html') %></td>
+        <td><%= link_to t(:download_csv), formatted_project_stats_path(c, 'csv') %></td>
+      </tr>
+    <% end %>    
+    </table>
+  </div>
+<% end %>

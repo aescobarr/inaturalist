@@ -2,6 +2,7 @@
   project ||= @project
   project_user ||= nil
   last ||= false
+  show_lineage ||= false
 -%>
 <div class="stacked column span-8 project<%= ' last' if last %>">
   <div class="column span-2 iconcol">
@@ -15,15 +16,19 @@
         <%= h truncate(strip_tags(project.description), :length => 110) %>
       </div>
     <% end %>
-    <% unless project.parent.blank? %>
-      <%= link_to h(project.parent.title), project.parent %>
-    <% end %>
-    <% unless project.children.blank? %>
-      <ul>
-      <% project.children.each do |son| %>
-        <li><%= link_to h(son.title), son  %></li>
+    <% if show_lineage %>
+      <% if project.child? %>
+        <%= link_to "#{t(:subproject)} #{t(:of)} #{h(project.parent.title).html_safe}", project.parent %>
       <% end %>
-      <ul>
+      <% if project.parent? && project.children.count > 0 %>
+        <% link_to_toggle_menu "#{t(:subproject).pluralize}", :class => "button",:wrapper => {:id => "project_menu", :class => "toggle_menu_list"} do %>
+          <ul>
+            <% project.children.each do |son| %>
+              <li><%= link_to truncate(son.title), son, :style => son.icon.file? ? "background-image: url(#{son.icon.url(:mini)})" : nil %></li>
+            <% end %>
+          <ul>
+        <% end %>
+      <% end %>
     <% end %>
     <% if project_user -%>
       <div>

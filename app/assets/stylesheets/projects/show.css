@@ -111,3 +111,6 @@ h2{line-height:1;margin:0;float:left;}
 #bioblitz td {border: 0 transparent;}
 .invited {background-color: #FFF6BF;}
 #projectnav li.invited:hover {background-color: #fffdcd;}
+#lineage {display:inline-block;margin-top:5px;background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 65%) repeat scroll 0 0 rgba(0, 0, 0, 0);}
+#lineage h4 a {color:#fff;font-family: "Fjalla One","Trebuchet MS",Arial,sans-serif;}
+#toggle_lineage { background-color:lightyellow; }

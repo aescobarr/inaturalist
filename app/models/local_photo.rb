@@ -28,18 +28,20 @@ class LocalPhoto < Photo
       :thumb  => image_convert_options,
       :square => image_convert_options
     },
-    :storage => :s3,
-    :s3_credentials => "#{Rails.root}/config/s3.yml",
-    :s3_host_alias => CONFIG.s3_bucket,
-    :bucket => CONFIG.s3_bucket,
-    :path => "photos/:id/:style.:extension",
-    :url => ":s3_alias_url",
-    :default_url => "/attachment_defaults/:class/:style.png"
-    # # Uncomment this to switch to local storage.  Sometimes useful for 
-    # # testing w/o ntwk
-    # :path => ":rails_root/public/attachments/:class/:attachment/:id/:style/:basename.:extension",
-    # :url => "/attachments/:class/:attachment/:id/:style/:basename.:extension",
-    # :default_url => "/attachment_defaults/:class/:attachment/defaults/:style.png"
+
+    #:storage => :s3,
+    #:s3_credentials => "#{Rails.root}/config/s3.yml",
+    #:s3_host_alias => CONFIG.s3_bucket,
+    #:bucket => CONFIG.s3_bucket,
+    #:path => "photos/:id/:style.:extension",
+    #:url => ":s3_alias_url",
+    #:default_url => "/attachment_defaults/:class/:style.png"
+    
+    # Uncomment this to switch to local storage.  Sometimes useful for 
+    # testing w/o ntwk
+    :path => ":rails_root/public/attachments/:class/:attachment/:id/:style/:basename.:extension",
+    :url => "/attachments/:class/:attachment/:id/:style/:basename.:extension",
+    :default_url => "/attachment_defaults/:class/:attachment/defaults/:style.png"
   
   process_in_background :file
   after_post_process :set_urls, :expire_observation_caches

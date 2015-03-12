@@ -230,6 +230,31 @@ FROM projects JOIN places ON projects.place_id = places.id", :as => :place_ids, 
   def featured_at_utc
     featured_at.try(:utc)
   end
+
+  # careful, this returns USERS
+  def users_lineage
+    t = ProjectUser.arel_table
+    results = ProjectUser.where( t[:project_id].eq(id).or(t[:project_id].in(children.map{|f| f.id})) )
+    results.map{|t| t.user}.uniq      
+  end
+
+  def project_users_lineage
+    unless parent?
+      project_users
+    else
+      t = ProjectUser.arel_table
+      results = ProjectUser.where( t[:project_id].eq(id).or(t[:project_id].in(children.map{|f| f.id}))  )
+    end
+  end
+
+  def project_observations_lineage
+    unless parent?
+      project_observations
+    else
+      t = ProjectObservation.arel_table
+      results = ProjectObservation.where( t[:project_id].eq(id).or(t[:project_id].in(children.map{|f| f.id})) )
+    end
+  end
   
   def tracking_code_allowed?(code)
     return false if code.blank?
@@ -326,6 +351,14 @@ FROM projects JOIN places ON projects.place_id = places.id", :as => :place_ids, 
   def event_in_progress?
     return nil if end_time.blank? || start_time.blank?
     start_time < Time.now && end_time > Time.now
+  end
+
+  def parent?
+    return Project.where(:parent_id => id).count > 0
+  end
+
+  def child?
+    return true unless parent.nil?
   end
   
   def self.default_json_options

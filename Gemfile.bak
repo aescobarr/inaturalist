@@ -8,8 +8,8 @@ gem 'aasm'
 gem 'addressable', :require => 'addressable/uri'
 gem 'airbrake'
 gem 'bborn-acts_as_taggable_on_steroids', :git => 'git://github.com/samoli/acts_as_taggable_on_steroids.git', :require => 'acts_as_taggable'
-gem 'ancestry', '2.0.0'
-gem 'aws-sdk', '1.11.2'
+gem 'ancestry'
+gem 'aws-sdk'
 gem 'bluecloth'
 gem 'capistrano', :require => false
 gem 'chronic'
@@ -19,9 +19,9 @@ gem 'daemon-spawn'
 gem 'dbf'
 gem 'delayed_job'
 gem 'delayed_job_active_record'
-gem 'devise','2.2.4'
-gem 'devise-encryptable','0.1.2'
-gem 'devise_suspendable','0.6.1'
+gem 'devise'
+gem 'devise-encryptable'
+gem 'devise_suspendable'
 gem 'diffy'
 gem 'doorkeeper', '~> 0.6.7'
 gem 'dynamic_form'
@@ -97,7 +97,6 @@ group :test, :development, :prod_dev do
   gem "rspec-rails"
   gem "rspec-html-matchers"
   gem "debugger"
-#  gem "byebug"
 end
 
 group :test do

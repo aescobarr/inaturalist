@@ -28,7 +28,7 @@
   <div id="started" class="projects clear">
     <h3><%=t :projects_you_admin %></h3>
     <% @started.each_with_index do |project, i| %>
-      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2} %>
+      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2, :show_lineage => true} %>
       <% if i % 3 == 2 -%><div class="clear" style="margin-bottom: 10px"></div><% end -%>
     <% end %>
   </div>
@@ -42,7 +42,7 @@
   <div id="joined" class="projects clear">
     <h3><%=t :projects_youve_joined %></h3>
     <% @joined.each_with_index do |project, i| %>
-      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2} %>
+      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2, :show_lineage => true} %>
       <% if i % 3 == 2 -%><div class="clear" style="margin-bottom: 10px"></div><% end -%>
     <% end %>
   </div>
@@ -66,7 +66,7 @@
       <% end -%>
     </div>
     <% @featured.each_with_index do |project, i| %>
-      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2} %>
+      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2, :show_lineage => true} %>
       <% if i % 3 == 2 -%><div class="clear" style="margin-bottom: 10px"></div><% end -%>
     <% end %>
   </div>
@@ -91,7 +91,7 @@
     </div>
   <% else %>
     <% @projects.each_with_index do |project, i| %>
-      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2} %>
+      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2, :show_lineage => true} %>
       <% if i % 3 == 2 -%><div class="clear" style="margin-bottom: 10px"></div><% end -%>
     <% end %>
   <% end -%>
@@ -117,7 +117,7 @@
     </div>
   <% else %>
     <% @created.each_with_index do |project, i| %>
-      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2} %>
+      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2, :show_lineage => true} %>
       <% if i % 3 == 2 -%><div class="clear" style="margin-bottom: 10px"></div><% end -%>
     <% end %>
   <% end -%>

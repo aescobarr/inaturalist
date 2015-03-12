@@ -23,7 +23,7 @@ module Ratatosk
       end
 
       def initialize
-        @service = CatalogueOfLife.new(10)
+        @service = CatalogueOfLife.new(30)
       end
 
       def find(name)
@@ -108,7 +108,7 @@ module Ratatosk
       protected
 
       def service
-        @service ||= CatalogueOfLife.new(10)
+        @service ||= CatalogueOfLife.new(30)
       end
 
       def get_lexicon

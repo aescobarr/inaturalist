@@ -26,7 +26,7 @@ class MetaService
   
   def initialize(options = {})
     @service_name = 'Web Service'
-    @timeout ||= 5
+    @timeout ||= 20
     @method_param ||= 'function'
     @default_params = {}
     @debug = options[:debug]

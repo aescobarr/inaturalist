@@ -29,7 +29,7 @@
 </div>
 
 <% @projects.each_with_index do |project, i| %>
-  <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2} %>
+  <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2, :show_lineage => true} %>
   <% if i % 3 == 2 -%><div class="clear" style="margin-bottom: 10px"></div><% end -%>
 <% end %>
 

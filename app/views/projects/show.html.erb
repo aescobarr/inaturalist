@@ -53,7 +53,7 @@
           links << link_to( t(:leave_this_project) , leave_project_path(@project), :method => :post, :class => "ui description",
             :confirm => t(:are_you_sure_leave_this_project))
         end
-        if @project_user.blank?
+        if @project_user.blank? && !@project.parent?
           links << link_to( t(:join_project), join_project_path(@project), :class => "ui")
         end
       -%>
@@ -76,9 +76,11 @@
         <% end -%>
       </h1>
 
-      <%= link_to new_observation_path(:project_id => @project.id), :id => 'addbutton', :rel => "nofollow" do %>
-        <small><%= t(:add) %></small>
-        <big><%= t(:observations) %></big>
+      <% unless @project.parent? %>
+        <%= link_to new_observation_path(:project_id => @project.id), :id => 'addbutton', :rel => "nofollow" do %>
+          <small><%= t(:add) %></small>
+          <big><%= t(:observations) %></big>
+        <% end -%>
       <% end -%>
 
       <% if @project.project_type == Project::BIOBLITZ_TYPE -%>
@@ -97,7 +99,7 @@
         </div>
       <% end -%>
     </div>
-  <% else %>
+   <% else %>
     <h2>
       <% if @logo_image -%>
         <%= image_tag @logo_image.asset.url %>
@@ -108,13 +110,41 @@
         <%= truncate @project.title, :length => 55 %>
       <% end -%>
     </h2>
-    
-    <span class="right buttonrow">
-      <%= link_to t(:add_observations_project), new_observation_path(:project_id => @project.id), 
-        :class => 'last button default', :rel => "nofollow" %>
-    </span>
+    <% unless @project.parent? %> 
+      <span class="right buttonrow">
+        <%= link_to t(:add_observations_project), new_observation_path(:project_id => @project.id), 
+          :class => 'last button default', :rel => "nofollow" %>
+      </span>
+    <% end -%>
   <% end -%>
 </div>
+
+<% if @project.parent? && @project.children.count > 0 %>
+  <div id="toggle_lineage">
+    <a href="#">Children</a>
+    <%= link_to_function "#{image_tag('toggle_arrow_down.png')}&nbsp;".html_safe,
+          "toggleHeaderSubnav(this)",
+          :class => 'subnavlink' %>
+  </div>
+  <div id="lineage">
+    <% @project.children.each_with_index do |project, i| %>
+      <%= render :partial => 'project', :object => project, :locals => {:last => i % 3 == 2} %>
+        <% if i % 3 == 2 -%><div class="clear" style="margin-bottom: 10px"></div><% end -%>
+      <% end %>
+  </div>
+<% elsif @project.child? %>
+  <div id="toggle_lineage">
+    <a href="#">Parent</a>
+    <%= link_to_function "#{image_tag('toggle_arrow_down.png')}&nbsp;".html_safe,
+          "toggleHeaderSubnav(this)",
+          :class => 'subnavlink' %>
+  </div>
+  <div id="lineage">
+       <%= render :partial => 'project', :object => @project.parent, :locals => {:last => false } %>
+      <div class="clear" style="margin-bottom: 10px"></div>
+  </div>
+<% end -%>
+
 
 <% if @project.project_type == Project::BIOBLITZ_TYPE -%>
   <div id="bioblitz" class="column span-24 stacked">
@@ -259,7 +289,7 @@
         <%= link_to "<span class='lead'>&raquo;</span> #{t(:event_observations)}".html_safe, @observations_url, :class => "navlink" %>
       </li>
     <% end -%>
-    <li>
+    <li> 
       <% if @project_observations_count.to_i > 0 -%>
         <span class="right" style="margin: 4px 10px 0 10px">
           <span class="count"><%= @project_observations_count %></span> <%= t(:observations).to_s.downcase %>
@@ -368,11 +398,20 @@
           <%= link_to t(:view_all_members), project_members_path(@project), :class => "readmore" %>
         <% else %>
           <div class="stacked clear">
-            <% for project_user in @project_users %>
-              <%= link_to image_tag(project_user.user.icon.url(:thumb), :class => 'usericon'),
-                observations_by_login_path(project_user.user.login),
-                :alt => h(project_user.user.login),
-                :title => "#{h(project_user.user.login)}, joined #{project_user.created_at.to_date.to_s(:long)}" %>
+            <% unless @project.parent? %>
+              <% for project_user in @project_users %>
+                <%= link_to image_tag(project_user.user.icon.url(:thumb), :class => 'usericon'),
+                  observations_by_login_path(project_user.user.login),
+                  :alt => h(project_user.user.login),
+                  :title => "#{h(project_user.user.login)}, joined #{project_user.created_at.to_date.to_s(:long)}" %>
+              <% end %>
+            <% else %>
+              <% for user in @project_users %>
+                <%= link_to image_tag(user.icon.url(:thumb), :class => 'usericon'),
+                  observations_by_login_path(user.login),
+                  :alt => h(user.login),
+                  :title => "#{h(user.login)}" %>
+              <% end %>
             <% end %>
           </div>
           <%= link_to t(:view_all_members), project_members_path(@project), :class => "readmore" %>
@@ -383,10 +422,10 @@
       <li>
         <%= link_to "<span class='lead'>&raquo;</span> #{t(:stats)}".html_safe, project_stats_path(@project), :class => "navlink" %>
       </li>
-      <% if @project.curated_by?(current_user) -%>
+      <% if @project.curated_by?(current_user) && !@project.parent? -%>
         <li><%= link_to "<span class='lead'>&raquo;</span> #{t(:invite_observations)}".html_safe, invitations_path(@project), :class => "navlink" %></li>
       <% end -%>
-      <% if @project.curated_by?(current_user) && @project.preferred_membership_model == Project::MEMBERSHIP_INVITE_ONLY -%>
+      <% if @project.curated_by?(current_user) && @project.preferred_membership_model == Project::MEMBERSHIP_INVITE_ONLY && !@project.parent? -%>
         <li><%= link_to "<span class='lead'>&raquo;</span> #{t(:invite_people)}".html_safe, invite_to_project_path(@project), :class => "navlink" %></li>
       <% end -%>
       <% if @project_user_invitation && @project_user_invitation.pending? -%>
@@ -397,7 +436,7 @@
           </div>
         </li>
       <% end -%>
-      <% if @project_user -%>
+      <% if @project_user && !@project.parent? -%>
         <li>
           <%= link_to "<span class='lead'>&raquo;</span> #{t(:add_from_your_observations)}".html_safe, invitations_path(@project, :params => {:by => "you"}), :class => "navlink" %>
           <div class="inner">
