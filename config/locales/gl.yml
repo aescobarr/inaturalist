@@ -2436,6 +2436,8 @@ gl:
   submit_comment: Enviar comentario
   submitted: Enviado
   subproject: Subproyecto
+  subproject_description: Si quieres que este proyecto sea un subproyecto, escoge el proyecto "padre" del desplegable. En caso contrario, dejalo en blanco.
+  subproject_parent: Proyecto padre
   subscribe_to_places_to: |-
     Subscríbete a lugares para recibir actualizacións acerca de novas
     observacións, persoas que segues e cousas que comentaches,
@@ -3640,6 +3642,7 @@ gl:
     attributes:
       project:
         title: Título
+        parent_id: Proyecto padre  
         project_icon: Icona de proxecto
         project_type: Tipo de proxecto
         prefers_count_from_list: Prefires un cálculo da lista

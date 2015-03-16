@@ -67,12 +67,14 @@
   </div>
 
   <div class="column span-12">
-      <legend><%=t('parent') + " " + t('project')%></legend>
-      <div class="description">Select the parent from the drop down below...</div>
       <% unless @project.id.nil? %>
-        <%= f.select :parent_id, Project.where(["parent_id is null and user_id = ? and id <> ?",current_user.id,@project.id]).collect {|p| [p.title,p.id]}, {include_blank: true} %>
+        <%= f.select :parent_id, Project.where(["parent_id is null and user_id = ? and id <> ?",current_user.id,@project.id]).collect {|p| [p.title,p.id]}, 
+          {include_blank: true},
+          :description => t(:subproject_description)  %>
       <% else %>
-         <%= f.select :parent_id, Project.where(["parent_id is null and user_id = ? and id is not null",current_user.id]).collect {|p| [p.title,p.id]}, {include_blank: true} %>
+        <%= f.select :parent_id, Project.where(["parent_id is null and user_id = ? and id is not null",current_user.id]).collect {|p| [p.title,p.id]}, 
+          {include_blank: true},
+          :description => t(:subproject_description) %>
       <% end %>
       <%= f.select :preferred_count_by, {t(:species).downcase => "species", t(:leaves).downcase => "leaves", t(:all).downcase => "all"}, :description => t(:project_preferred_count_description) %>
   </div>

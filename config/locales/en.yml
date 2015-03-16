@@ -2522,6 +2522,8 @@ en:
     to %{x} from this %{y}.
   subscriptions_arent_available_for:  Subscriptions aren't available for places without boundaries.
   subproject: Subproject
+  subproject_description: If you wish this project to be a subproject, choose a "parent" from the drop down menu. Otherwise, leave it blank.
+  subproject_parent: Parent project
   successfully_changed_your_password: Successfully changed your password.
   suggest_an_id: Suggest an ID
   suggest_or_require_that: Suggest or require that contributors fill out these fields for the observations they add to your project.
@@ -4173,7 +4175,8 @@ en:
         source_url: Source URL
         published_at: Publication
       project:
-        title: Title 
+        title: Title
+        parent_id: Parent project 
         project_icon: Project icon
         project_type: Project type
         preferred_count_by: Preferred count by

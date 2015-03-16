@@ -121,7 +121,7 @@
 
 <% if @project.parent? && @project.children.count > 0 %>
   <div id="toggle_lineage">
-    <a href="#">Children</a>
+    <a href="#"><%= t(:subproject).pluralize %></a>
     <%= link_to_function "#{image_tag('toggle_arrow_down.png')}&nbsp;".html_safe,
           "toggleHeaderSubnav(this)",
           :class => 'subnavlink' %>
@@ -134,7 +134,7 @@
   </div>
 <% elsif @project.child? %>
   <div id="toggle_lineage">
-    <a href="#">Parent</a>
+    <a href="#"><%= t(:subproject_parent) %></a>
     <%= link_to_function "#{image_tag('toggle_arrow_down.png')}&nbsp;".html_safe,
           "toggleHeaderSubnav(this)",
           :class => 'subnavlink' %>

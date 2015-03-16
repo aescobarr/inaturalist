@@ -2849,6 +2849,8 @@ es:
   submit_comment: Enviar comentario
   submitted: Enviado
   subproject: Subproyecto
+  subproject_description: Si quieres que este proyecto sea un subproyecto, escoge el proyecto "padre" del desplegable. En caso contrario, dejalo en blanco.
+  subproject_parent: Proyecto padre
   subscribe_to_places_to: |-
     Suscribete a lugares para recibir actualizaciones acerca de nuevas
     observaciones, personas que sigues y cosas que has comentado,
@@ -4635,6 +4637,7 @@ es:
         published_at: Publicación
       project:
         title: Título
+        parent_id: Proyecto padre
         project_icon: Ícono de proyecto
         project_type: Tipo de proyecto
         preferred_count_by: Conteo preferido por

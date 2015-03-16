@@ -83,6 +83,7 @@ es:
       project: 
         description: Descripción
         map_type: "Tipo de mapa"
+        parent_id: Proyecto padre
         prefers_count_from_list: "Prefieres un cálculo de la lista"
         prefers_place_boundary_visible: "Mostrar los límites del lugar en el mapa"
         project_icon: "Icono de proyecto"
@@ -2411,6 +2412,8 @@ es:
   submit_comment: "Enviar comentario"
   submitted: Enviado
   subproject: Subproyecto
+  subproject_parent: Proyecto padre
+  subproject_description: Si quieres que este proyecto sea un subproyecto, escoge el proyecto "padre" del desplegable. En caso contrario, dejalo en blanco.
   subscribe_to_places_to: |
       Suscríbete a lugares para recibir actualizaciones acerca de nuevas
       observaciones, personas que sigues y cosas que has comentado,

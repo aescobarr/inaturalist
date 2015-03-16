@@ -2438,6 +2438,8 @@ eu:
   submit_comment: Aipamena bidali
   submitted: Bidalita
   subproject: Subproyecto
+  subproject_description: Si quieres que este proyecto sea un subproyecto, escoge el proyecto "padre" del desplegable. En caso contrario, dejalo en blanco.
+  subproject_parent: Proyecto padre
   subscribe_to_places_to: Tokietan harpidetu behaketa berriei, jarraitzen dituzun
     pertsonei eta aipatu dituzun gauzei buruzko eguneraketak jasotzeko; hori guztia
     harpidetzek gobernatzen dute, zertan harpidetu zaren eta zertan ez ikus dezakezu.
@@ -3613,6 +3615,7 @@ eu:
         url: URL
       project:
         title: Izenburua
+        parent_id: Proyecto padre
         project_icon: Proiektuaren ikonoa
         project_type: Proiektu mota
         prefers_count_from_list: Nahiago duzu zerrendako kalkulu bat
