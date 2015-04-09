@@ -19,7 +19,7 @@ def elongate_password(t_login)
   t_login
 end
 
-def cleanup(csv) 
+def cleanup_users(csv) 
   csv.each do |row|
     h = row.to_hash
     login = get_login_from_name h["name"]
@@ -61,12 +61,44 @@ def create_users(csv)
   end
 end
 
+def check_project_members(csv)
+  puts "Determining members in project..."
+  distribution = Hash.new
+  csv.each do |row|
+    h = row.to_hash
+    group = h["group"]
+    if distribution.has_key?(group)
+      distribution[group] << h["name"]
+    else
+      distribution.store(group,h["name"])
+    end
+  end
+  puts distribution
+end
+
+def create_projects(csv)
+  puts "Creating projects"
+  created = Array.new
+  csv.each do |row|
+    h = row.to_hash
+    group = h["group"]
+    unless created.include? group
+      created << group
+      puts "Creating project Grup " + group
+    end
+  end
+end
+
 NAME=2
 NAME_1=0
 NAME_2=1
 
+PARENT_PROJECT_ID=9
+
 csv_text = File.read('/home/agusti/_inat_fecyt_2015_last/inaturalist/tools/test.csv')
 csv = CSV.parse(csv_text, :headers => true, :col_sep => ';')
 
-cleanup csv
-create_users csv
+# cleanup_users csv
+# create_users csv
+create_projects csv
+#check_project_members csv
