@@ -10,7 +10,8 @@
   padding: 5px 0;
 }
 #project_menu ul li a {
-  background-position: 190px center;
+  background-position: 148px center;
+  width: 140px;
   background-repeat: no-repeat;
   display: block;
   float: none;

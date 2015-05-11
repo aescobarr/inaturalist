@@ -360,10 +360,14 @@ FROM projects JOIN places ON projects.place_id = places.id", :as => :place_ids, 
   def child?
     return true unless parent.nil?
   end
+
+  def children_id
+    return children.map{|p| p.id}
+  end
   
   def self.default_json_options
     {
-      :methods => [:icon_url, :project_observation_rule_terms, :featured_at_utc, :rule_place, :cached_slug, :slug],
+      :methods => [:icon_url, :project_observation_rule_terms, :featured_at_utc, :rule_place, :cached_slug, :slug, :children_id], 
       :except => [:tracking_codes]
     }
   end

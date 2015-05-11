@@ -884,7 +884,8 @@ ul.leafylist li li:first-child {
   margin: 0;
 }
 .toggle_menu_list .menu li {
-  white-space: nowrap;
+  //white-space: nowrap;
+  white-space: normal;
   margin-bottom: 5px;
 }
 .toggle_menu_list .button {
